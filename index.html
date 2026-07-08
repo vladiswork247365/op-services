@@ -238,7 +238,7 @@ function buildCard(s){
     card.className = 'card';
   }
   const photo = s.photo
-    ? '<img src="img/'+s.photo+'?v=1" alt="'+s.spec+'" loading="lazy" onerror="this.style.display=\'none\';this.nextElementSibling.style.display=\'flex\'"><div class="noimg" style="display:none">ФОТО</div>'
+    ? '<img src="img/'+s.photo+'?v=2" alt="'+s.spec+'" loading="lazy" onerror="this.style.display=\'none\';this.nextElementSibling.style.display=\'flex\'"><div class="noimg" style="display:none">ФОТО</div>'
     : '<div class="noimg">ФОТО</div>';
   // Кнопка: у карточки-ссылки — это span (визуальная кнопка, вложенный <a> в <a> недопустим),
   // у WhatsApp-карточки — обычная ссылка на wa.me.
