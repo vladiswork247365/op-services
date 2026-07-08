@@ -225,7 +225,7 @@ function buildCard(s){
   const card = document.createElement('article');
   card.className = 'card';
   const photo = s.photo
-    ? '<img src="img/'+s.photo+'" alt="'+s.spec+'" loading="lazy" onerror="this.style.display=\'none\';this.nextElementSibling.style.display=\'flex\'"><div class="noimg" style="display:none">ФОТО</div>'
+    ? '<img src="img/'+s.photo+'?v=1" alt="'+s.spec+'" loading="lazy" onerror="this.style.display=\'none\';this.nextElementSibling.style.display=\'flex\'"><div class="noimg" style="display:none">ФОТО</div>'
     : '<div class="noimg">ФОТО</div>';
   card.innerHTML =
     '<div class="photo'+(s.logo?' logo':'')+'">'+
