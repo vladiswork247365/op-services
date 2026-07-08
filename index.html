@@ -75,6 +75,7 @@ h1{font-weight:900;font-size:clamp(24px,4.4vw,40px);letter-spacing:.04em;line-he
   box-shadow:0 20px 50px rgba(0,0,0,.5), inset 0 1px 0 rgba(255,255,255,.04);
   backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
   display:flex;flex-direction:column;
+  text-decoration:none;color:inherit;
   transition:transform .3s cubic-bezier(.6,0,.2,1),border-color .3s,box-shadow .3s;}
 .card:hover{transform:translateY(-5px);border-color:rgba(255,80,100,.45);
   box-shadow:0 28px 64px rgba(224,16,41,.18), 0 20px 50px rgba(0,0,0,.55);}
@@ -212,21 +213,32 @@ function fmtPhone(d){ // 77075340658 → +7 707 534 06 58
   return '+'+d;
 }
 
-// надёжное открытие ссылки: новая вкладка в обычном браузере, а если её
-// заблокировал встроенный браузер мессенджера — переход в этом же окне
-function openLink(url){
-  var w = window.open(url, '_blank', 'noopener');
-  if(!w){ window.location.href = url; }
-}
-
 const grid = document.getElementById('grid');
 
 function buildCard(s){
-  const card = document.createElement('article');
-  card.className = 'card';
+  // Карточка-ссылка = настоящий <a target="_blank">: клик по любому месту карточки
+  // надёжно открывает отдельную вкладку (и не трогает текущую).
+  var card;
+  if(s.link){
+    card = document.createElement('a');
+    card.className = 'card clickable';
+    card.href = s.link;
+    card.target = '_blank';
+    card.rel = 'noopener';
+  } else {
+    card = document.createElement('article');
+    card.className = 'card';
+  }
   const photo = s.photo
     ? '<img src="img/'+s.photo+'?v=1" alt="'+s.spec+'" loading="lazy" onerror="this.style.display=\'none\';this.nextElementSibling.style.display=\'flex\'"><div class="noimg" style="display:none">ФОТО</div>'
     : '<div class="noimg">ФОТО</div>';
+  // Кнопка: у карточки-ссылки — это span (визуальная кнопка, вложенный <a> в <a> недопустим),
+  // у WhatsApp-карточки — обычная ссылка на wa.me.
+  const button = s.link
+    ? '<span class="wa">'+linkIcon+'<span>Перейти на сайт</span></span>'
+    : '<a class="wa" href="https://wa.me/'+s.wa+'?text='+WA_TEXT+'" target="_blank" rel="noopener">'+
+        waIcon+'<span>WhatsApp</span><span class="num">'+fmtPhone(s.wa)+'</span>'+
+      '</a>';
   card.innerHTML =
     '<div class="photo'+(s.logo?' logo':'')+'">'+
       '<div class="verified" title="Проверен «Система ОП»">'+starIcon+'<span>TOP</span></div>'+
@@ -236,19 +248,8 @@ function buildCard(s){
       '<div class="spec">'+s.spec+'</div>'+
       (s.name ? '<div class="name">'+s.name+'</div>' : '')+
       '<div class="desc">'+s.desc+'</div>'+
-      (s.link
-        ? '<a class="wa" href="'+s.link+'" target="_blank" rel="noopener">'+
-            linkIcon+'<span>Перейти на сайт</span>'+
-          '</a>'
-        : '<a class="wa" href="https://wa.me/'+s.wa+'?text='+WA_TEXT+'" target="_blank" rel="noopener">'+
-            waIcon+'<span>WhatsApp</span><span class="num">'+fmtPhone(s.wa)+'</span>'+
-          '</a>')+
+      button+
     '</div>';
-  // вся карточка-ссылка кликабельна целиком; открытие — через надёжный openLink
-  if(s.link){
-    card.classList.add('clickable');
-    card.addEventListener('click', function(e){ e.preventDefault(); openLink(s.link); });
-  }
   return card;
 }
 
